@@ -6,7 +6,7 @@ void IsDataValidSize(int&);
 void DisplayMatrix(int**, int);
 void FillingMatrixOfMaxElements(int**, int**, int);
 void FillingFirstMatrix(int **, int);
-int MaxElementInMatrix(int** a, int n, int i, int right, int left, int currentmax);
+int MaxElementInMatrix(int**, int, int, int, int);
 void FreeMemory(int**, int);
 
 int main(){
@@ -104,7 +104,6 @@ void FillingFirstMatrix(int **a, int n)
 void FillingMatrixOfMaxElements(int** a, int **b, int n)
 {
 	int currentmax = a[0][0];
-	int left, right = 0;
 	for (int j = 0; j < n; j++)
 		b[0][j] = a[0][j];
 	for (int i = 1; i < n; i++)
@@ -113,31 +112,36 @@ void FillingMatrixOfMaxElements(int** a, int **b, int n)
 		{
 			
 				currentmax = a[i][j];
-				left = j - 1;
-				if (i - 1 < 0)
-					left = 0;
-				right = j + 1;
-				if (j + 1 == n)
-					right = n - 1;
-				b[i][j] = MaxElementInMatrix(a, n, i, right, left, currentmax);
+				b[i][j] = MaxElementInMatrix(a, n, i, j, currentmax);
 				
 		}
 	}
 }
 
-int MaxElementInMatrix(int** a, int n, int i, int right, int left, int currentmax)
+int MaxElementInMatrix(int** a, int n, int i, int j, int currentmax)
 {
 	i--;
 	int max = currentmax;
 	int l = i;
+	int left = j - 1;
+	if (j - 1 < 0)
+		left = 0;
+	int right = j + 1;
+	if (j + 1 == n)
+		right = n - 1;
 	while (l >= 0)
 	{
-		for (int j = left; j < right + 1; j++)
+		for (int p = left; p < right + 1; p++)
 		{
-			if (a[i][j] > max)
-				max = a[i][j];
+			if (a[l][p] > max)
+				max = a[l][p];
 		}
 		l--;
+		if (l == -1) break;
+		if (left != 0)
+		left--;
+		if (right != n)
+		right++;
 	}
 	return max;
 }
