@@ -1,24 +1,25 @@
 #include <iostream>
 using namespace std;
 
-double** CreateMatrix(int);
+int** CreateMatrix(int);
 void IsDataValidSize(int&);
-void DisplayMatrix(double**, int);
-void FillingMatrixOfMaxElements(double**, double**, int);
-void FillingFirstMatrix(double **, int);
-double MaxElementInMatrix(double**, int);
-void FreeMemory(double**, int);
+void DisplayMatrix(int**, int);
+void FillingMatrixOfMaxElements(int**, int**, int);
+void FillingFirstMatrix(int **, int);
+int MaxElementInMatrix(int** a, int n, int i, int right, int left, int currentmax);
+void FreeMemory(int**, int);
 
 int main(){
 	int n = 0;
 	IsDataValidSize(n);
 	system("cls");
-	double** a = CreateMatrix(n);
+	int** a = CreateMatrix(n);
 	cout << "First Matrix:" << endl << endl;
 	FillingFirstMatrix(a, n);
+	cout << "Matrix:" << endl << endl;
 	DisplayMatrix(a, n);
 	cout << "-----------------------------------------------------------" << endl;
-	double** b = CreateMatrix(n);
+	int** b = CreateMatrix(n);
 	cout << "Matrix of Max Elements:" << endl << endl;
 	FillingMatrixOfMaxElements(a, b, n);
 	DisplayMatrix(b, n);
@@ -40,15 +41,15 @@ void IsDataValidSize(int &n)
 	}
 }
 
-double** CreateMatrix(int n)
+int** CreateMatrix(int n)
 {
-	double **a = new double*[n];
+	int **a = new int*[n];
 	for (int i = 0; i < n; i++)
-		a[i] = new double[n];
+		a[i] = new int[n];
 	return a;
 }
 
-void DisplayMatrix(double** a, int n)
+void DisplayMatrix(int** a, int n)
 {
 	for (int i = 0; i < n; i++)
 	{
@@ -62,7 +63,7 @@ void DisplayMatrix(double** a, int n)
 	}
 }
 
-void FillingFirstMatrix(double **a, int n)
+void FillingFirstMatrix(int **a, int n)
 {
 	while (true)
 	{
@@ -100,40 +101,48 @@ void FillingFirstMatrix(double **a, int n)
 	}
 }
 
-void FillingMatrixOfMaxElements(double** a, double **b, int n)
+void FillingMatrixOfMaxElements(int** a, int **b, int n)
 {
-	//it is still undone
-	for (int i = 0; i < n; i++)
+	int currentmax = a[0][0];
+	int left, right = 0;
+	for (int j = 0; j < n; j++)
+		b[0][j] = a[0][j];
+	for (int i = 1; i < n; i++)
 	{
 		for (int j = 0; j < n; j++)
 		{
-			if (i == 0)
-			{
-				b[i][j] = a[i][j];
-			}
-			else
-			{
-				b[i][j] = i;
-			}
+			
+				currentmax = a[i][j];
+				left = j - 1;
+				if (i - 1 < 0)
+					left = 0;
+				right = j + 1;
+				if (j + 1 == n)
+					right = n - 1;
+				b[i][j] = MaxElementInMatrix(a, n, i, right, left, currentmax);
+				
 		}
 	}
 }
 
-double MaxElementInMatrix(double** c, int n)
+int MaxElementInMatrix(int** a, int n, int i, int right, int left, int currentmax)
 {
-	double max = 0;
-	for (int i = 0; i < n; i++)
+	i--;
+	int max = currentmax;
+	int l = i;
+	while (l >= 0)
 	{
-		for (int j = 0; j < n - 1; j++)
+		for (int j = left; j < right + 1; j++)
 		{
-			if (c[i][j] > max)
-				max = c[i][j];
+			if (a[i][j] > max)
+				max = a[i][j];
 		}
+		l--;
 	}
 	return max;
 }
 
-void FreeMemory(double** a, int n)
+void FreeMemory(int** a, int n)
 {
 	for (int i = 0; i < n; i++)
 		delete[]a[i];
